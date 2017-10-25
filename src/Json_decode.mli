@@ -215,10 +215,16 @@ val pair : 'a decoder -> 'b decoder -> ('a * 'b) decoder
 ]}
 *)
 
-val tuple2 : 'a safeDecoder -> 'b safeDecoder -> ('a * 'b) safeDecoder
+val tuple2 : 'a decoder -> 'b decoder -> ('a * 'b) decoder
 
-val tuple3 : 'a safeDecoder -> 'b safeDecoder -> 'c safeDecoder -> ('a * 'b * 'c) safeDecoder
-  
+val tuple3 : 'a decoder -> 'b decoder -> 'c decoder -> ('a * 'b * 'c) decoder
+
+val tuple4 : 'a decoder -> 'b decoder -> 'c decoder -> 'd decoder -> ('a * 'b * 'c * 'd) decoder
+
+val tuple5 : 'a decoder -> 'b decoder -> 'c decoder -> 'd decoder -> 'e decoder -> ('a * 'b * 'c * 'd * 'e) decoder
+
+val tuple6 : 'a decoder -> 'b decoder -> 'c decoder -> 'd decoder -> 'e decoder -> 'f decoder -> ('a * 'b * 'c * 'd * 'e * 'f) decoder
+
 val dict : 'a decoder -> 'a Js.Dict.t decoder
 (** Decodes a JSON object into a dict using the given decoder on each of its values
     
