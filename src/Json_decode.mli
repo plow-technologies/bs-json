@@ -18,7 +18,7 @@ type 'a safeDecoder = Js.Json.t -> ('a, string) Js_result.t
 
 exception DecodeError of string
 
-val boolean : Js.boolean decoder
+val boolean : Js.boolean safeDecoder
 (** Decodes a JSON value into a [Js.boolean]
     
 {b Returns} a [Js.boolean] if the JSON value is a number.
@@ -38,7 +38,7 @@ val boolean : Js.boolean decoder
 ]}
 *)
 
-val bool : bool decoder
+val bool : bool safeDecoder
 (** Decodes a JSON value into a [bool]
     
 {b Returns} a [bool] if the JSON value is a number.
@@ -58,7 +58,7 @@ val bool : bool decoder
 ]}
 *)
 
-val float : float decoder
+val float : float safeDecoder
 (** Decodes a JSON value into a [float]
     
 {b Returns} a [float] if the JSON value is a number.
@@ -78,7 +78,7 @@ val float : float decoder
 ]}
 *)
 
-val int : int decoder
+val int : int safeDecoder
 (** Decodes a JSON value into an [int]
     
 {b Returns} an [int] if the JSON value is a number.
@@ -98,7 +98,7 @@ val int : int decoder
 ]}
 *)
 
-val string : string decoder
+val string : string safeDecoder
 (** Decodes a JSON value into a [string]
     
 {b Returns} a [string] if the JSON value is a number.
@@ -116,7 +116,7 @@ val string : string decoder
 ]}
 *)
 
-val nullable : 'a decoder -> 'a Js.null decoder
+val nullable : 'a safeDecoder -> ('a Js.null) safeDecoder
 (** Decodes a JSON value into an ['a Js.null]
     
 {b Returns} [Js.null] if the JSON value is [null], or an ['a Js.null] if the
@@ -135,25 +135,7 @@ given decoder succeeds,
 ]}
 *)
 
-val nullAs : 'a -> 'a decoder
-(** Returns the given value if the JSON value is [null]
-    
-{b Returns} an ['a] if the JSON value is [null].
-
-@raise [DecodeError] if unsuccessful 
-
-@example {[
-  open Json
-  (* raises DecodeError *)
-  let _ = Js.Json.parseExn "\"x\"" |> Decode.nullAs "x"
-  (* returns "x" *)
-  let _ = Js.Json.parseExn "null" |> Decode.nullAs "x"
-  (* returns None *)
-  let _ = Js.Json.parseExn "null" |> Decode.nullAs None
-]}
-*)
-
-val array : 'a decoder -> 'a array decoder
+val array : 'a safeDecoder -> 'a array safeDecoder
 (** Decodes a JSON array into an ['a array] using the given decoder on each element
     
 {b Returns} an ['a array] if the JSON value is a JSON array and all its
@@ -174,7 +156,7 @@ elements are successfully decoded.
 ]}
 *)
 
-val list : 'a decoder -> 'a list decoder
+val list : 'a safeDecoder -> 'a list safeDecoder
 (** Decodes a JSON array into an ['a list] using the given decoder on each element
     
 {b Returns} an ['a list] if the JSON value is a JSON array and all its
@@ -195,7 +177,7 @@ elements are successfully decoded.
 ]}
 *)
 
-val pair : 'a decoder -> 'b decoder -> ('a * 'b) decoder
+val pair : 'a safeDecoder -> 'b safeDecoder -> ('a * 'b) safeDecoder
 (** Decodes a JSON array with two elements into an ['a * 'b] tuple using the
     first decoder on the left element and the second decoder on the right
 
@@ -219,7 +201,7 @@ val tuple2 : 'a safeDecoder -> 'b safeDecoder -> ('a * 'b) safeDecoder
 
 val tuple3 : 'a safeDecoder -> 'b safeDecoder -> 'c safeDecoder -> ('a * 'b * 'c) safeDecoder
   
-val dict : 'a decoder -> 'a Js.Dict.t decoder
+val dict : 'a safeDecoder -> 'a Js.Dict.t safeDecoder
 (** Decodes a JSON object into a dict using the given decoder on each of its values
     
 {b Returns} an ['a Js.Dict.t] if the JSON value is a JSON object and all its
@@ -240,7 +222,9 @@ values are successfully decoded.
 ]}
 *)
 
-val field : string -> 'a decoder -> 'a decoder
+val field : string -> 'a safeDecoder -> 'a safeDecoder
+
+val unsafeField : string -> 'a safeDecoder -> 'a decoder
 (** Decodes a JSON object with a specific field into the value of that field
     
 {b Returns} an ['a] if the JSON value is a JSON object with the given field
@@ -263,7 +247,9 @@ and a value that is successfully decoded with the given decoder.
 ]}
 *)
 
+(*  
 val at : string list -> 'a decoder -> 'a decoder
+ *)
 (** Same as [field] but takes a top level field and a list of nested fields for decoding nested values.
     
 {b Returns} an ['a] if the JSON value is a JSON object with the given field
@@ -280,7 +266,7 @@ and a value that is successfully decoded with the given decoder.
 ]}
 *)
 
-val optional : 'a decoder -> 'a option decoder
+val optional : 'a safeDecoder -> 'a option decoder
 (** Maps a decoder [result] to an option
     
 {b Returns} [Some of 'a] if the given decoder is successful, [None] if
@@ -314,7 +300,7 @@ a composite decoder, and is useful to decode optional JSON object fields.
 ]}
 *)
 
-val oneOf : 'a decoder list -> 'a decoder
+val oneOf : 'a safeDecoder list -> 'a safeDecoder
 (** Tries each [decoder] in order, retunring the result of the first that succeeds
 
 {b Returns} an ['a] if one of the decoders succeed.
@@ -332,7 +318,7 @@ val oneOf : 'a decoder list -> 'a decoder
 ]}
 *)
 
-val either : 'a decoder -> 'a decoder -> 'a decoder
+val either : 'a safeDecoder -> 'a safeDecoder -> 'a safeDecoder
 (** Tries each [decoder] in order, retunring the result of the first that succeeds
 
 {b Returns} an ['a] if one of the decoders succeed.
@@ -350,7 +336,7 @@ val either : 'a decoder -> 'a decoder -> 'a decoder
 ]}
 *)
 
-val withDefault : 'a -> 'a decoder -> 'a decoder
+val withDefault : 'a -> 'a safeDecoder -> 'a decoder
 (** Tries each [decoder] in order, retunring the result of the first that succeeds
 
 {b Returns} an ['a] if one of the decoders succeed.
@@ -368,7 +354,7 @@ val withDefault : 'a -> 'a decoder -> 'a decoder
 ]}
 *)
 
-val map : ('a -> 'b) -> 'a decoder -> 'b decoder
+val map : ('a -> 'b) -> 'a safeDecoder -> 'b safeDecoder
 (** Returns a decoder that maps the result of the given decoder if successful
 
 {b Returns} a ['b] if the given decoder succeeds.
@@ -382,7 +368,7 @@ val map : ('a -> 'b) -> 'a decoder -> 'b decoder
 ]}
 *)
 
-val andThen : ('a -> 'b decoder) -> 'a decoder -> 'b decoder
+val andThen : ('a -> 'b safeDecoder) -> 'a safeDecoder -> 'b safeDecoder
 (** Returns a decoder that maps the result of the given decoder if successful
 
 {b Returns} an ['a] if both decoders succeed.
