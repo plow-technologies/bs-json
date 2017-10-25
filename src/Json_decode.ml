@@ -5,6 +5,8 @@ let _isInteger value =
 
 type 'a decoder = Js.Json.t -> 'a
 
+type 'a safeDecoder = Js.Json.t -> ('a, string) Js_result.t
+
 exception DecodeError of string
 
 let boolean json = 
@@ -77,6 +79,87 @@ let pair left right json =
   else
     raise @@ DecodeError ("Expected array, got " ^ Js.Json.stringify json)
 
+
+let tuple2 first second json =
+  if Js.Array.isArray json then begin
+    let source = (Obj.magic (json : Js.Json.t) : Js.Json.t array) in
+    let length = Js.Array.length source in
+    if length = 2 then
+      (match first (Array.unsafe_get source 0) with
+       | Js_result.Ok a0 ->
+         (match second (Array.unsafe_get source 1) with
+          | Js_result.Ok a1 -> Js_result.Ok (a0,a1)
+          | Js_result.Error err -> Js_result.Error ("Decoder for the second element of the tuple failed, got " ^ err)
+         )
+       | Js_result.Error err -> Js_result.Error ("Decoder for the first element of the tuple failed, got " ^ err)
+      )
+    else
+      Js_result.Error ("Expected array of length 3, got array of length" ^ (string_of_int length))
+  end
+  else
+    Js_result.Error ("Expected array, got " ^ Js.Json.stringify json)
+
+let tuple3 first second third json =
+  if Js.Array.isArray json then begin
+    let source = (Obj.magic (json : Js.Json.t) : Js.Json.t array) in
+    let length = Js.Array.length source in
+    if length = 3 then
+      (match first (Array.unsafe_get source 0) with
+       | Js_result.Ok a0 ->
+         (match second (Array.unsafe_get source 1) with
+          | Js_result.Ok a1 ->
+             (match third (Array.unsafe_get source 2) with
+              | Js_result.Ok a2 -> Js_result.Ok (a0,a1,a2)
+              | Js_result.Error err -> Js_result.Error ("Decoder for the third element of the tuple failed, got " ^ err)
+             )
+          | Js_result.Error err -> Js_result.Error ("Decoder for the second element of the tuple failed, got " ^ err)
+         )
+       | Js_result.Error err -> Js_result.Error ("Decoder for the first element of the tuple failed, got " ^ err)
+      )
+    else
+      Js_result.Error ("Expected array of length 3, got array of length" ^ (string_of_int length))
+  end
+  else
+    Js_result.Error ("Expected array, got " ^ Js.Json.stringify json)
+
+(*
+let tuple4 first second third fourth json =
+  if Js.Array.isArray json then begin
+    let source = (Obj.magic (json : Js.Json.t) : Js.Json.t array) in
+    let length = Js.Array.length source in
+    if length = 4 then
+      Js_result.Ok (first (Array.unsafe_get source 0), second (Array.unsafe_get source 1), third (Array.unsafe_get source 2), fourth (Array.unsafe_get source 3))
+    else
+      Js_result.Error ("Expected array of length 4, got array of length" ^ (string_of_int length))
+  end
+  else
+    Js_result.Error ("Expected array, got " ^ Js.Json.stringify json)
+
+let tuple5 first second third fourth fifth json =
+  if Js.Array.isArray json then begin
+    let source = (Obj.magic (json : Js.Json.t) : Js.Json.t array) in
+    let length = Js.Array.length source in
+    if length = 4 then
+      Js_result.Ok (first (Array.unsafe_get source 0), second (Array.unsafe_get source 1), third (Array.unsafe_get source 2), fourth (Array.unsafe_get source 3), fifth (Array.unsafe_get source 4))
+    else
+      Js_result.Error ("Expected array of length 5, got array of length" ^ (string_of_int length))
+  end
+  else
+    Js_result.Error ("Expected array, got " ^ Js.Json.stringify json)
+
+let tuple6 first second third fourth fifth sixth json =
+  if Js.Array.isArray json then begin
+    let source = (Obj.magic (json : Js.Json.t) : Js.Json.t array) in
+    let length = Js.Array.length source in
+    if length = 4 then
+      Js_result.Ok (first (Array.unsafe_get source 0), second (Array.unsafe_get source 1), third (Array.unsafe_get source 2), fourth (Array.unsafe_get source 3), fifth (Array.unsafe_get source 4), sixth (Array.unsafe_get source 5))
+    else
+      Js_result.Error ("Expected array of length 6, got array of length" ^ (string_of_int length))
+  end
+  else
+    Js_result.Error ("Expected array, got " ^ Js.Json.stringify json)
+*)
+  
 let dict decode json = 
   if Js.typeof json = "object" && 
       not (Js.Array.isArray json) && 

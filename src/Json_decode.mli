@@ -13,6 +13,9 @@ third-party libraries.
 type 'a decoder = Js.Json.t -> 'a
 (** The type of a decoder combinator *)
 
+type 'a safeDecoder = Js.Json.t -> ('a, string) Js_result.t
+(** The type of a safe decoder combinator **)
+
 exception DecodeError of string
 
 val boolean : Js.boolean decoder
@@ -212,6 +215,10 @@ val pair : 'a decoder -> 'b decoder -> ('a * 'b) decoder
 ]}
 *)
 
+val tuple2 : 'a safeDecoder -> 'b safeDecoder -> ('a * 'b) safeDecoder
+
+val tuple3 : 'a safeDecoder -> 'b safeDecoder -> 'c safeDecoder -> ('a * 'b * 'c) safeDecoder
+  
 val dict : 'a decoder -> 'a Js.Dict.t decoder
 (** Decodes a JSON object into a dict using the given decoder on each of its values
     
