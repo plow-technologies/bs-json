@@ -1,6 +1,6 @@
 {
   "name": "bs-json",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reasonml-community/bs-json.git"
+    "url": "git+https://github.com/plow-technologies/bs-json.git"
   },
   "keywords": [
     "bucklescript",
@@ -23,9 +23,9 @@
   "author": "glennsl",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/reasonml-community/bs-json/issues"
+    "url": "https://github.com/plow-technologies/bs-json/issues"
   },
-  "homepage": "https://github.com/reasonml-community/bs-json#readme",
+  "homepage": "https://github.com/plow-technologies/bs-json#readme",
   "devDependencies": {
     "bs-platform": "^1.9.0",
     "bs-jest": "reasonml-community/bs-jest"
