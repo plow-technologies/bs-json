@@ -436,3 +436,5 @@ val andThen : ('a -> 'b decoder) -> 'a decoder -> 'b decoder
     |> decodeTree int
 ]}
 *)
+
+val unwrapResult : ('a, string) Js_result.t -> 'a

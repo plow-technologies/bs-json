@@ -196,3 +196,8 @@ let map f decode json =
 
 let andThen b a json=
   b (a json) json
+
+let unwrapResult r =
+  match r with
+  | Js_result.Ok v -> v
+  | Js_result.Error message -> raise @@ DecodeError message
