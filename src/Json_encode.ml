@@ -7,7 +7,7 @@ external int : int -> Js.Json.t = "%identity"
 external boolean : Js.boolean -> Js.Json.t = "%identity" 
 external dict : Js.Json.t Js_dict.t -> Js.Json.t = "%identity"
 
-let dateFloat f: Js.Json.t = string (Js_date.toISOString f)
+let date d: Js.Json.t = string (Js_date.toISOString d)
   
 let object_ props: Js.Json.t =
   props |> Js.Dict.fromList
