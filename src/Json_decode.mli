@@ -116,6 +116,9 @@ val string : string decoder
 ]}
 *)
 
+val date : Js_date.t decoder
+
+  
 val nullable : 'a decoder -> 'a Js.null decoder
 (** Decodes a JSON value into an ['a Js.null]
     

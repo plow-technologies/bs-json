@@ -37,6 +37,17 @@ let string json =
   else
     raise @@ DecodeError ("Expected string, got " ^ Js.Json.stringify json)
 
+
+let date json =
+  if Js.typeof json = "string" then
+    let source = (Obj.magic (json : Js.Json.t) : string) in
+    let encodedDate = Js_date.fromString source in
+    if Js_float.isNaN (Js_date.getTime encodedDate)
+    then raise @@ DecodeError ("Expected date, got " ^ source)
+    else encodedDate
+  else
+    raise @@ DecodeError ("Expected date, got " ^ Js.Json.stringify json)
+    
 let nullable decode json =
   if (Obj.magic json : 'a Js.null) == Js.null then
     Js.null
