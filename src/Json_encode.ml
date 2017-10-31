@@ -7,7 +7,7 @@ external int : int -> Js.Json.t = "%identity"
 external boolean : Js.boolean -> Js.Json.t = "%identity" 
 external dict : Js.Json.t Js_dict.t -> Js.Json.t = "%identity"
 
-let optional optionalValue encode =
+let optional encode optionalValue =
   match optionalValue with
   | Some value -> encode value
   | None -> null
