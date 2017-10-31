@@ -7,6 +7,11 @@ external int : int -> Js.Json.t = "%identity"
 external boolean : Js.boolean -> Js.Json.t = "%identity" 
 external dict : Js.Json.t Js_dict.t -> Js.Json.t = "%identity"
 
+let optional optionalValue encode =
+  match optionalValue with
+  | Some value -> encode value
+  | None -> null
+
 let date d: Js.Json.t = string (Js_date.toISOString d)
   
 let object_ props: Js.Json.t =

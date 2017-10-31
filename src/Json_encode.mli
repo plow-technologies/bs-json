@@ -27,6 +27,8 @@ val object_ : (string * Js.Json.t) list -> Js.Json.t
 external array : Js.Json.t array -> Js.Json.t = "%identity"
 (** [array a] makes a JSON array of the [Js.Json.t array] [a] *)
 
+val optional : 'a option -> 'a encoder -> Js.Json.t
+
 val date : Js_date.t encoder
 
 val list : 'a encoder -> 'a list encoder
