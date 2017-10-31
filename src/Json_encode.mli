@@ -28,7 +28,7 @@ external array : Js.Json.t array -> Js.Json.t = "%identity"
 (** [array a] makes a JSON array of the [Js.Json.t array] [a] *)
 
 val optional : 'a encoder -> 'a option -> Js.Json.t
-
+  
 val date : Js_date.t encoder
 
 val list : 'a encoder -> 'a list encoder
@@ -37,6 +37,18 @@ val list : 'a encoder -> 'a list encoder
 (** The functions below are specialized for specific array type which 
     happened to be already JSON object in the BuckleScript runtime. Therefore
     they are more efficient (constant time rather than linear conversion). *) 
+
+val pair : 'a encoder -> 'b encoder -> ('a * 'b) -> Js.Json.t
+
+val tuple2 : 'a encoder -> 'b encoder -> ('a * 'b) -> Js.Json.t
+
+val tuple3 : 'a encoder -> 'b encoder -> 'c encoder -> ('a * 'b * 'c) -> Js.Json.t
+
+val tuple4 : 'a encoder -> 'b encoder -> 'c encoder -> 'd encoder -> ('a * 'b * 'c * 'd) -> Js.Json.t
+  
+val tuple5 : 'a encoder -> 'b encoder -> 'c encoder -> 'd encoder -> 'e encoder -> ('a * 'b * 'c * 'd * 'e) -> Js.Json.t
+
+val tuple6 : 'a encoder -> 'b encoder -> 'c encoder -> 'd encoder -> 'e encoder -> 'f encoder -> ('a * 'b * 'c * 'd * 'e * 'f) -> Js.Json.t
 
 external stringArray : string array -> Js.Json.t = "%identity"
 (** [stringArray a] makes a JSON array of the [string array] [a] *) 
